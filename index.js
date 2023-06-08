@@ -30,6 +30,7 @@ async function run() {
 
     const popularClassesCollection = client.db("Shippo-Sports").collection("popularClasses");
     const popularInstructorsCollection = client.db("Shippo-Sports").collection("popularInstructors");
+    const instructorsCollection = client.db("Shippo-Sports").collection("instructors");
 
 
     app.get('/popularClasses', async(req, res)=>{
@@ -37,9 +38,13 @@ async function run() {
         res.send(result);
     })
 
-
     app.get('/popularInstructors', async(req, res)=>{
         const result = await popularInstructorsCollection.find().toArray();
+        res.send(result);
+    })
+
+    app.get('/instructors', async(req, res)=>{
+        const result = await instructorsCollection.find().toArray();
         res.send(result);
     })
 
