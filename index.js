@@ -28,11 +28,18 @@ async function run() {
     await client.connect();
 
 
-    const popularClassesCollection = client.db("Shippo-Sports").collection("popularClasses")
+    const popularClassesCollection = client.db("Shippo-Sports").collection("popularClasses");
+    const popularInstructorsCollection = client.db("Shippo-Sports").collection("popularInstructors");
 
 
     app.get('/popularClasses', async(req, res)=>{
         const result = await popularClassesCollection.find().toArray();
+        res.send(result);
+    })
+
+
+    app.get('/popularInstructors', async(req, res)=>{
+        const result = await popularInstructorsCollection.find().toArray();
         res.send(result);
     })
 
