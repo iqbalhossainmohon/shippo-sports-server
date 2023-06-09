@@ -28,10 +28,11 @@ async function run() {
     await client.connect();
 
 
-    const popularClassesCollection = client.db("Shippo-Sports").collection("popularClasses");
-    const popularInstructorsCollection = client.db("Shippo-Sports").collection("popularInstructors");
-    const instructorsCollection = client.db("Shippo-Sports").collection("instructors");
-    const classesCollection = client.db("Shippo-Sports").collection("classes");
+    const popularClassesCollection = client.db("Shippo-Sports").collection("popularClasses")
+    const popularInstructorsCollection = client.db("Shippo-Sports").collection("popularInstructors")
+    const instructorsCollection = client.db("Shippo-Sports").collection("instructors")
+    const classesCollection = client.db("Shippo-Sports").collection("classes")
+    const selectedClassCollection = client.db("Shippo-Sports").collection("selected")
 
 
     app.get('/popularClasses', async(req, res)=>{
@@ -53,6 +54,18 @@ async function run() {
         const result = await classesCollection.find().toArray();
         res.send(result);
     })
+
+    // class related api 
+    app.post('/select', async(req, res)=>{
+      const selected = req.body;
+      console.log(selected);
+      const result = await selectedClassCollection.insertOne(selected);
+      res.send(result);
+    })
+
+
+
+
 
 
     // Send a ping to confirm a successful connection
