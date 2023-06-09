@@ -56,6 +56,16 @@ async function run() {
     })
 
     // class related api 
+    app.get('/select', async(req, res)=>{
+      const email = req.query.email;
+      if(!email){
+        res.send([]);
+      }
+      const query = {email: email};
+      const result = await selectedClassCollection.find(query).toArray();
+      res.send(result);
+    })
+
     app.post('/select', async(req, res)=>{
       const selected = req.body;
       console.log(selected);
