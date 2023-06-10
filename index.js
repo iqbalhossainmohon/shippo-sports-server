@@ -28,11 +28,31 @@ async function run() {
     await client.connect();
 
 
+    const usersCollection = client.db("Shippo-Sports").collection("users")
     const popularClassesCollection = client.db("Shippo-Sports").collection("popularClasses")
     const popularInstructorsCollection = client.db("Shippo-Sports").collection("popularInstructors")
     const instructorsCollection = client.db("Shippo-Sports").collection("instructors")
     const classesCollection = client.db("Shippo-Sports").collection("classes")
     const selectedClassCollection = client.db("Shippo-Sports").collection("selected")
+
+
+    app.get('/users', async(req, res)=>{
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    })
+
+    app.post('/users', async(req, res)=>{
+      const user = req.body;
+      const query = {email: user.email}
+      const existingUser = await usersCollection.findOne(query);
+      console.log('existing User: ',existingUser);
+      if(existingUser){
+        return res.send({message: 'User already exists'})
+      }
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    })
+
 
 
     app.get('/popularClasses', async(req, res)=>{
@@ -79,6 +99,7 @@ async function run() {
       const result = await selectedClassCollection.deleteOne(query);
       res.send(result);
     })
+    
 
 
 
