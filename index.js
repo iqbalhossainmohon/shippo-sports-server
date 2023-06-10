@@ -36,18 +36,18 @@ async function run() {
     const selectedClassCollection = client.db("Shippo-Sports").collection("selected")
 
 
-    app.get('/users', async(req, res)=>{
+    app.get('/users', async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     })
 
-    app.post('/users', async(req, res)=>{
+    app.post('/users', async (req, res) => {
       const user = req.body;
-      const query = {email: user.email}
+      const query = { email: user.email }
       const existingUser = await usersCollection.findOne(query);
-      console.log('existing User: ',existingUser);
-      if(existingUser){
-        return res.send({message: 'User already exists'})
+      console.log('existing User: ', existingUser);
+      if (existingUser) {
+        return res.send({ message: 'User already exists' })
       }
       const result = await usersCollection.insertOne(user);
       res.send(result);
@@ -55,52 +55,63 @@ async function run() {
 
 
 
-    app.get('/popularClasses', async(req, res)=>{
-        const result = await popularClassesCollection.find().toArray();
-        res.send(result);
+    app.get('/popularClasses', async (req, res) => {
+      const result = await popularClassesCollection.find().toArray();
+      res.send(result);
     })
 
-    app.get('/popularInstructors', async(req, res)=>{
-        const result = await popularInstructorsCollection.find().toArray();
-        res.send(result);
+    app.get('/popularInstructors', async (req, res) => {
+      const result = await popularInstructorsCollection.find().toArray();
+      res.send(result);
     })
 
-    app.get('/instructors', async(req, res)=>{
-        const result = await instructorsCollection.find().toArray();
-        res.send(result);
+    app.get('/instructors', async (req, res) => {
+      const result = await instructorsCollection.find().toArray();
+      res.send(result);
     })
-    
-    app.get('/classes', async(req, res)=>{
-        const result = await classesCollection.find().toArray();
-        res.send(result);
+
+    app.get('/classes', async (req, res) => {
+      const result = await classesCollection.find().toArray();
+      res.send(result);
     })
 
     // class related api 
-    app.get('/select', async(req, res)=>{
+    app.get('/select', async (req, res) => {
       const email = req.query.email;
-      if(!email){
+      if (!email) {
         res.send([]);
       }
-      const query = {email: email};
+      const query = { email: email };
       const result = await selectedClassCollection.find(query).toArray();
       res.send(result);
     })
 
-    app.post('/select', async(req, res)=>{
+    app.post('/select', async (req, res) => {
       const selected = req.body;
       console.log(selected);
       const result = await selectedClassCollection.insertOne(selected);
       res.send(result);
     })
 
-    app.delete('/select/:id', async(req, res)=>{
+    app.delete('/select/:id', async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await selectedClassCollection.deleteOne(query);
       res.send(result);
     })
-    
 
+
+    app.path('users/admin/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          role: 'admin'
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
 
 
 
@@ -119,10 +130,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res)=>{
-    res.send('Shippo Sports Academy is Running');
+app.get('/', (req, res) => {
+  res.send('Shippo Sports Academy is Running');
 })
 
-app.listen(port, ()=>{
-    console.log(`Shippo Sports Academy is Running on port: ${port}`);
+app.listen(port, () => {
+  console.log(`Shippo Sports Academy is Running on port: ${port}`);
 })
