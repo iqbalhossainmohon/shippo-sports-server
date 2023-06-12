@@ -52,6 +52,7 @@ async function run() {
     const instructorsCollection = client.db("Shippo-Sports").collection("instructors")
     const classesCollection = client.db("Shippo-Sports").collection("classes")
     const selectedClassCollection = client.db("Shippo-Sports").collection("selected")
+    const paymentCollection = client.db("Shippo-Sports").collection("payments")
 
     app.post('/jwt', (req, res) => {
       const user = req.body;
@@ -193,6 +194,15 @@ async function run() {
       })
     })
 
+    app.post('/payments', verifyJWT, async(req, res)=>{
+      const payment = req.body;
+      const insertResult = await paymentCollection.insertOne(payment);
+
+      const query = {_id: {$in: payment.selectClass.map(id=> new ObjectId(id))}}
+      const deletedResult = await selectedClassCollection.deleteMany(query)
+
+      res.send({insertResult, deletedResult});
+    })
 
 
 
